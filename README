@@ -11,10 +11,6 @@ email: k.a.stroykova@gmail.com
 ЗАПУСК
 
 Для запуска выполнить:
-
-make run
-
-Для уточнения имени входных файлов для построения шинглов выполнить:
 make run
 или
 python shingles.py karenina1_utf.html karenina2_utf.html
