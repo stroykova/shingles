@@ -29,19 +29,12 @@ def get_shingles(words, shingle_size):
         return shingles
 
     for i in range(0, words_count - shingle_size + 1):
-        shingle = []
+        shingle = ""
         for j in range(i, i + shingle_size):
-            shingle.append(words[j])
+            shingle += words[j]
         shingles.append(shingle)
 
     return shingles
-
-
-def get_shingle_hash_function(p, shingle):
-    row = ""
-    for word in shingle:
-        row += word
-    return get_word_hash_function(p, row)
 
 
 def get_word_hash_function(p, word):
@@ -62,7 +55,7 @@ def get_hash_functions_matrix(shingles):
     for p in range(1, hash_length + 1):
         hash_functions = []
         for shingle in shingles:
-            hash_functions.append(get_shingle_hash_function(p + 10, shingle))
+            hash_functions.append(get_word_hash_function(p + 10, shingle))
         hash_functions_matrix.append(hash_functions)
         percentage = 100 * p / hash_length
         if percentage != previous_percentage:
