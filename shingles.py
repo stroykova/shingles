@@ -72,6 +72,17 @@ def get_minimums(hash_matrix):
     return sorted(minimums)
 
 
+def get_super_shingles(minimums):
+    super_shingles = []
+    super_shingle_size = 14
+    count = len(minimums) / super_shingle_size
+
+    for idx in range(0, count):
+        super_shingles.append(minimums[idx * super_shingle_size: (idx + 1) * super_shingle_size])
+
+    return super_shingles
+
+
 def get_text_shingles_minimums(text_file_name):
     print ""
     print "Input file name: " + text_file_name
@@ -108,9 +119,25 @@ def compare_arrays(operand1, operand2):
         else:
             index2 += 1
 
-
     percentage = 50 * (size1 + size2) * match_count / (size1 * size2)
     return percentage
+
+
+def compare_super_shingles(operand1, operand2):
+    index1 = 0
+    index2 = 0
+
+    size1 = len(operand1)
+    size2 = len(operand2)
+
+    match_count = 0
+    while index1 < size1 and index2 < size2:
+        if operand1[index1] == operand2[index2]:
+            match_count += 1
+        index1 += 1
+        index2 += 1
+
+    return match_count
 
 
 def main():
@@ -128,6 +155,12 @@ def main():
     minimums1 = get_text_shingles_minimums(in_file_name1)
     minimums2 = get_text_shingles_minimums(in_file_name2)
 
+
     print "Texts are the same on " + str(compare_arrays(minimums1, minimums2)) + "%"
+
+    super_shingles_1 = get_super_shingles(minimums1)
+    super_shingles_2 = get_super_shingles(minimums2)
+
+    print "Matched super shingles count: " + str(compare_super_shingles(super_shingles_1, super_shingles_2))
 
 main()
