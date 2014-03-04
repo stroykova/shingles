@@ -2,8 +2,8 @@
 
 import sys
 import re
-import hashlib
-import json
+import itertools
+
 
 def get_words(file_name):
     f = open(file_name, 'r')
@@ -123,7 +123,7 @@ def compare_arrays(operand1, operand2):
     return percentage
 
 
-def compare_super_shingles(operand1, operand2):
+def compare_arrays(operand1, operand2):
     index1 = 0
     index2 = 0
 
@@ -155,12 +155,16 @@ def main():
     minimums1 = get_text_shingles_minimums(in_file_name1)
     minimums2 = get_text_shingles_minimums(in_file_name2)
 
-
     print "Texts are the same on " + str(compare_arrays(minimums1, minimums2)) + "%"
 
     super_shingles_1 = get_super_shingles(minimums1)
     super_shingles_2 = get_super_shingles(minimums2)
 
-    print "Matched super shingles count: " + str(compare_super_shingles(super_shingles_1, super_shingles_2))
+    print "Matched super shingles count: " + str(compare_arrays(super_shingles_1, super_shingles_2))
+
+    mega_shingles_1 = list(itertools.combinations(super_shingles_1, 2))
+    mega_shingles_2 = list(itertools.combinations(super_shingles_2, 2))
+
+    print "Matched mega shingles count: " + str(compare_arrays(mega_shingles_1, mega_shingles_2))
 
 main()
