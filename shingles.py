@@ -5,7 +5,6 @@ import re
 import hashlib
 import json
 
-
 def get_words(file_name):
     f = open(file_name, 'r')
     file_text = f.read()
@@ -38,45 +37,38 @@ def get_shingles(words, shingle_size):
     return shingles
 
 
-def get_hash_functions(shingle):
-    hash_functions = []
+def get_shingle_hash_function(p, shingle):
+    row = ""
+    for word in shingle:
+        row += word
+    return get_word_hash_function(p, row)
 
-    #1
-    digest = hashlib.md5(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
 
-    #2
-    digest = hashlib.sha1(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
-
-    #3
-    digest = hashlib.sha224(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
-
-    #4
-    digest = hashlib.sha256(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
-
-    #5
-    digest = hashlib.sha384(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
-
-    #6
-    digest = hashlib.sha512(json.dumps(shingle, sort_keys=True)).hexdigest()
-    hash_functions.append(int(digest, hashlib.md5().digest_size))
-
-    return hash_functions
+def get_word_hash_function(p, word):
+    hash_value = 0
+    p_pow = 1
+    for i in range(0, len(word)):
+        hash_value += ord(word[i]) * p_pow
+        p_pow *= p
+    return hash_value
 
 
 def get_hash_functions_matrix(shingles):
     hash_functions_matrix = []
     previous_percentage = -1
-    for idx, shingle in enumerate(shingles):
-        hash_functions_matrix.append(get_hash_functions(shingle))
-        percentage = 100 * idx / len(shingles)
+
+    hash_length = 84
+
+    for p in range(1, hash_length + 1):
+        hash_functions = []
+        for shingle in shingles:
+            hash_functions.append(get_shingle_hash_function(p + 10, shingle))
+        hash_functions_matrix.append(hash_functions)
+        percentage = 100 * p / hash_length
         if percentage != previous_percentage:
             print str(percentage) + "% done"
             previous_percentage = percentage
+
     return hash_functions_matrix
 
 
@@ -123,11 +115,13 @@ def compare_arrays(operand1, operand2):
         else:
             index2 += 1
 
+
     percentage = 50 * (size1 + size2) * match_count / (size1 * size2)
     return percentage
 
 
 def main():
+
     args_count = len(sys.argv)
 
     if args_count < 3:
