@@ -1,0 +1,4 @@
+shingles
+========
+
+Shingles algorithm
