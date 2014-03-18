@@ -43,8 +43,7 @@ def get_word_hash_function(p, word):
     for i in range(0, len(word)):
         hash_value += ord(word[i]) * p_pow
         p_pow *= p
-    return hash_value
-
+    return int(hash_value) % (int('1'*32))
 
 def get_hash_functions_matrix(shingles):
     hash_functions_matrix = []
@@ -52,11 +51,12 @@ def get_hash_functions_matrix(shingles):
 
     hash_length = 84
 
-    for p in range(1, hash_length + 1):
+    for p in range(0, hash_length):
         hash_functions = []
         for shingle in shingles:
             hash_functions.append(get_word_hash_function(p + 10, shingle))
         hash_functions_matrix.append(hash_functions)
+
         percentage = 100 * p / hash_length
         if percentage != previous_percentage:
             print str(percentage) + "% done"
@@ -65,10 +65,16 @@ def get_hash_functions_matrix(shingles):
     return hash_functions_matrix
 
 
-def get_minimums(hash_matrix):
+def get_minimums(hash_matrix, text_file_name):
+    filename = text_file_name + "_minimums"
+    f = open(filename, "w")
     minimums = []
     for row in hash_matrix:
-        minimums.append(min(row))
+        minimum = min(row)
+        minimums.append(minimum)
+        f.write(str(row.index(minimum))+'   ' + str(minimum) + "\n")
+    f.close()
+    print minimums
     return sorted(minimums)
 
 
@@ -96,7 +102,7 @@ def get_text_shingles_minimums(text_file_name):
     print "Getting hash functions..."
     matrix = get_hash_functions_matrix(shingles)
     print "Getting minimums..."
-    minimums = get_minimums(matrix)
+    minimums = get_minimums(matrix, text_file_name)
     print "Got " + str(len(minimums)) + " minimums"
     return minimums
 
